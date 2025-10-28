@@ -1,24 +1,26 @@
- pipeline {
+pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                sh '''
-                    DEPLOY="$HOME/devops_lab_site"
-                    mkdir -p "$DEPLOY"
-                    cp -f website/Event_registration.html 
-"$DEPLOY"/Event_registration.html
-                '''
+                git 'https://github.com/username/jenkins-ci-demo.git'
             }
         }
-        stage('Serve') {
+        stage('Build') {
             steps {
-                sh '''
-                    DEPLOY="$HOME/devops_lab_site"
-                    FILE="$DEPLOY/Event_registration.html"
-                    echo "File deployed to: $FILE"
-                '''
+                sh 'mvn clean install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying application...'
             }
         }
     }
- }
+}
+
